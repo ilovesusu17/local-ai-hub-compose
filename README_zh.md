@@ -133,3 +133,16 @@ local-ai-hub-compose/
 ## 📄 开源协议
 
 本项目基于 [MIT License](./LICENSE) 协议开源。
+
+---
+
+## 🧭 项目治理文档
+
+| 文档 | 用途 |
+| --- | --- |
+| [CHANGELOG.md](./CHANGELOG.md) | 版本历史与发布记录 |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Fork → 切分支 → 提 PR 完整流程 |
+| [SECURITY.md](./SECURITY.md) | 安全漏洞私密报告渠道 |
+| [Issue 模板](./.github/ISSUE_TEMPLATE) | 缺陷反馈与功能请求表单 |
+| [PR 模板](./.github/PULL_REQUEST_TEMPLATE.md) | 每个 Pull Request 自动附带的检查清单 |
+| [CODEOWNERS](./.github/CODEOWNERS) | 维护者评审路由 |

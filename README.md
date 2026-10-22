@@ -139,3 +139,16 @@ This repository contains **zero credentials, zero private keys, and zero proprie
 ## 📄 License
 
 Distributed under the [MIT License](./LICENSE).
+
+---
+
+## 🧭 Project Governance
+
+| Document | Purpose |
+| --- | --- |
+| [CHANGELOG.md](./CHANGELOG.md) | Version history and release notes |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Fork → branch → PR workflow |
+| [SECURITY.md](./SECURITY.md) | How to report vulnerabilities privately |
+| [Issue templates](./.github/ISSUE_TEMPLATE) | Bug report and feature request forms |
+| [PR template](./.github/PULL_REQUEST_TEMPLATE.md) | Checklist applied to every pull request |
+| [CODEOWNERS](./.github/CODEOWNERS) | Maintainer review routing |
