@@ -57,3 +57,30 @@ Modern AI reverse proxy hubs implement KV cache affinity (session stickiness) to
 ### Solution
 - To force an immediate rotation, explicitly disable the active account in the hub UI or create a brand new conversation thread in your coding assistant client.
 - Do not mix model names between distinct regional channels in New-API; assign explicit aliases or routing models (e.g., `model-domestic`, `model-intl`).
+
+---
+
+## 4. Placeholder Hub Images Fail to Pull
+
+### Symptom: `docker compose up` fails while pulling `ghcr.io/local-hub/*` (image not found / denied)
+
+### Cause
+The four hub services (`workbuddy`, `trae`, `qoder`, `cliproxyapi`) ship with **placeholder image names** as defaults in `docker-compose.yml`. The real upstream projects publish images under their own registries, so a fresh clone cannot pull `ghcr.io/local-hub/*`.
+
+### Solution
+1. In `.env`, set `WORKBUDDY_IMAGE`, `TRAE_IMAGE`, `QODER_IMAGE`, `CLIPROXY_IMAGE` to the real image references recommended by each upstream project's own README.
+2. If you only need the gateway, remove the hub services you do not run and keep `new-api` alone.
+3. Re-run `docker compose up -d` — swap the placeholders before first start so nothing mounts against a never-running container.
+
+---
+
+## 5. Healthchecks Report "unhealthy" While the Port Answers
+
+### Symptom
+A hub container shows `unhealthy` in `docker ps`, yet its web console opens fine from the browser.
+
+### Cause
+The generic `wget --spider` probe assumes the image ships `wget`. Some minimal images have no probe tool inside, so the check fails even though the service works.
+
+### Solution
+Replace that service's `healthcheck.test` with a probe the image really supports (for example a `node`-based check, the vendor's own status endpoint, or a `curl` variant) — or remove the healthcheck for that service. Healthchecks are observational here; nothing in this compose file depends on them.
