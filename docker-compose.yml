@@ -17,6 +17,13 @@ services:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     volumes:
       - ./data/new-api:/data
+    healthcheck:
+      # 探测 New-API 状态接口；镜像内自带 wget（已实测），无需额外安装
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - ai-hub-net
 
