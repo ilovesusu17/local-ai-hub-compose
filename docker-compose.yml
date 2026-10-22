@@ -71,6 +71,12 @@ services:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     volumes:
       - ./data/trae:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8791/ || [ $? -eq 8 ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - ai-hub-net
 
@@ -91,6 +97,12 @@ services:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     volumes:
       - ./data/qoder:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8790/ || [ $? -eq 8 ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - ai-hub-net
 
@@ -111,6 +123,12 @@ services:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     volumes:
       - ./data/cliproxy:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8317/ || [ $? -eq 8 ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - ai-hub-net
 
