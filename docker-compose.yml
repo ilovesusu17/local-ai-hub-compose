@@ -44,6 +44,13 @@ services:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     volumes:
       - ./data/workbuddy:/app/data
+    healthcheck:
+      # 占位探测：只要端口有 HTTP 应答即视为存活（wget 退出码 8 表示收到 401/404 等响应，同样算通过）
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8788/ || [ $? -eq 8 ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - ai-hub-net
 
