@@ -1,0 +1,9 @@
+# Code owners for this project
+# This file defines who owns the code in specific directories
+
+@ilovesusu17-a11y  *
+
+# Specific file/directory ownership
+# .dockerignore           @ilovesusu17-a11y
+# docker-compose.yml      @ilovesusu17-a11y
+# README.md               @ilovesusu17-a11y
