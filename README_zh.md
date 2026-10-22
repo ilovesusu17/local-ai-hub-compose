@@ -69,10 +69,13 @@
    ```bash
    docker compose up -d
    ```
+   > **注意**：`new-api` 使用真实上游镜像；四个反代 Hub 默认是**占位镜像名**（`ghcr.io/local-hub/*`）。请先在 `.env` 里把 `WORKBUDDY_IMAGE` / `TRAE_IMAGE` / `QODER_IMAGE` / `CLIPROXY_IMAGE` 换成你实际使用的镜像（或删掉不需要的服务），否则这几个镜像会拉取失败。
 3. **打开控制面板开始使用**：
    - New-API 管理后台：`http://localhost:3000`（默认初始管理员：`root` / `123456`，请务必立即修改）
    - WorkBuddy Hub 面板：`http://localhost:8788`
    - Trae Hub 面板：`http://localhost:8791`
+   - Qoder Hub 面板：`http://localhost:8790`
+   - CLIProxy API：`http://localhost:8317`
 
 ---
 

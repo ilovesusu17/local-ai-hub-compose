@@ -75,10 +75,13 @@ Designed for developers, homelabs, and small engineering teams seeking a central
    ```bash
    docker compose up -d
    ```
+   > **Note**: `new-api` pulls a real upstream image, but the four hub services ship as **placeholder image names** (`ghcr.io/local-hub/*`). Replace `WORKBUDDY_IMAGE` / `TRAE_IMAGE` / `QODER_IMAGE` / `CLIPROXY_IMAGE` in `.env` with the images you actually run (or remove those services) before `up`, otherwise their pulls will fail.
 3. **Open the web consoles**:
    - New-API Gateway: `http://localhost:3000` (Default: `root` / `123456`)
    - WorkBuddy Hub: `http://localhost:8788`
    - Trae Hub: `http://localhost:8791`
+   - Qoder Hub: `http://localhost:8790`
+   - CLIProxy API: `http://localhost:8317`
 
 ---
 
