@@ -1,5 +1,11 @@
 # Local AI Hub Compose
 
+[![release](https://img.shields.io/badge/release-v0.1.0-blue)](./CHANGELOG.md)
+[![license](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![docker compose](https://img.shields.io/badge/Docker--Compose-required-2496ed?logo=docker&logoColor=white)](./docker-compose.yml)
+[![prereqs](https://img.shields.io/badge/needs-Docker%20Desktop%20%7C%20Engine-lightgrey)](./docs/troubleshooting.md)
+[![contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)](./CONTRIBUTING.md)
+
 > **v0.1.0** — A self-hosted, all-in-one Docker Compose orchestration template for **New-API** and multiple AI reverse-proxy hubs on a unified Docker bridge network.
 
 Designed for developers, homelabs, and small engineering teams seeking a centralized, cost-effective API gateway for their local AI coding assistants and LLM tools.
