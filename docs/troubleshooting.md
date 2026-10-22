@@ -1,0 +1,59 @@
+# Troubleshooting & Practical Pitfalls Guide
+
+This guide compiles practical lessons, edge cases, and architectural caveats gathered from configuring and running multi-hub AI reverse-proxy clusters behind New-API.
+
+---
+
+## 1. Container DNS & Inter-Service Connectivity
+
+### Symptom: `no such host` or connection refused inside New-API
+When adding an upstream proxy channel inside the New-API console (e.g., pointing to WorkBuddy or Trae), requests fail with:
+```text
+dial tcp: lookup host.docker.internal on 127.0.0.11:53: no such host
+```
+
+### Cause
+By default, custom user-defined Docker bridge networks (`ai-hub-net`) provide automatic DNS resolution **only for container and service names**. The special alias `host.docker.internal` is intended for host-container bridge loops and is frequently unresolvable within user-defined Linux/Windows container networks without explicit host-gateway extra_hosts entries.
+
+### Solution
+Always connect services via their **container name** and internal port:
+- WorkBuddy upstream: `http://workbuddy:8788`
+- Trae upstream: `http://trae:8791`
+- Qoder upstream: `http://qoder:8790`
+- CLIProxy upstream: `http://cliproxyapi:8317`
+
+---
+
+## 2. New-API "Unlimited" Token Balance Trap
+
+### Symptom: HTTP 403 `Insufficient user quota, remaining quota: $-XX.XX`
+Clients suddenly receive HTTP 403 errors stating `Insufficient user quota` or negative quota values, even though the token in use was created with the **"Unlimited" (`无限制`)** checkbox ticked.
+
+### Cause
+In New-API's accounting model:
+- A token marked with a specific quota consumes only up to that threshold.
+- A token marked as **Unlimited** redirects all billing directly to the **parent User Account's total quota balance**.
+- When large context requests (e.g., 200k-400k tokens in long-chain coding sessions) execute rapidly, the parent user account's quota can be exhausted and enter negative figures.
+
+### Solution
+1. Log in to the New-API Web Console as `root`/`admin`.
+2. Navigate to **Console -> Admin -> Users (用户管理)**.
+3. Locate the target user and click **Edit (编辑)**.
+4. Increase the **Quota (额度)** field to an ample number (e.g., `1000000000`) or top up via the Wallet interface.
+5. Save changes. Downstream clients will resume normal operations immediately without restarting containers.
+
+---
+
+## 3. Dual-Region Multi-Account Isolation & Session Stickiness
+
+### Symptom: Weight modifications do not immediately rotate the upstream account
+When running multi-account pools with dual regions (Domestic vs. International pools):
+1. Keys configured for Domestic pools cannot access International accounts, and vice-versa. Maintain separate upstream channels for each region.
+2. Even after lowering an account's selection weight in the proxy hub, ongoing coding conversations continue targeting the previous account until restarted.
+
+### Cause
+Modern AI reverse proxy hubs implement KV cache affinity (session stickiness) to preserve prefix caching benefits and reduce token latency. The hub binds an ongoing session ID to the initial account assigned at session initiation.
+
+### Solution
+- To force an immediate rotation, explicitly disable the active account in the hub UI or create a brand new conversation thread in your coding assistant client.
+- Do not mix model names between distinct regional channels in New-API; assign explicit aliases or routing models (e.g., `model-domestic`, `model-intl`).

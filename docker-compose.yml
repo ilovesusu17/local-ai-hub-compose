@@ -1,0 +1,96 @@
+services:
+  # -------------------------------------------------------------
+  # 1. Unified Gateway: New-API
+  # -------------------------------------------------------------
+  new-api:
+    image: calciumion/new-api:latest
+    container_name: new-api
+    restart: unless-stopped
+    ports:
+      - "${NEW_API_PORT:-3000}:3000"
+    environment:
+      - SQL_DSN=${SQL_DSN:-}
+      - REDIS_CONN_STRING=${REDIS_CONN_STRING:-}
+      - SESSION_SECRET=${NEW_API_SESSION_SECRET:-changeme_random_secret_string}
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - ./data/new-api:/data
+    networks:
+      - ai-hub-net
+
+  # -------------------------------------------------------------
+  # 2. Reverse Proxy Hub: WorkBuddy
+  # -------------------------------------------------------------
+  workbuddy:
+    image: ${WORKBUDDY_IMAGE:-ghcr.io/local-hub/workbuddy2api-hub:latest}
+    container_name: workbuddy
+    restart: unless-stopped
+    ports:
+      - "${WORKBUDDY_PORT:-8788}:8788"
+    environment:
+      - PORT=8788
+      - APP_KEY=${WORKBUDDY_APP_KEY:-admin_secret_key}
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - ./data/workbuddy:/app/data
+    networks:
+      - ai-hub-net
+
+  # -------------------------------------------------------------
+  # 3. Reverse Proxy Hub: Trae
+  # -------------------------------------------------------------
+  trae:
+    image: ${TRAE_IMAGE:-ghcr.io/local-hub/trae2api:latest}
+    container_name: trae
+    restart: unless-stopped
+    ports:
+      - "${TRAE_PORT:-8791}:8791"
+    environment:
+      - PORT=8791
+      - AUTH_TOKEN=${TRAE_AUTH_TOKEN:-trae_token_secret}
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - ./data/trae:/app/data
+    networks:
+      - ai-hub-net
+
+  # -------------------------------------------------------------
+  # 4. Reverse Proxy Hub: Qoder
+  # -------------------------------------------------------------
+  qoder:
+    image: ${QODER_IMAGE:-ghcr.io/local-hub/qoder2api:latest}
+    container_name: qoder
+    restart: unless-stopped
+    ports:
+      - "${QODER_PORT:-8790}:8790"
+    environment:
+      - PORT=8790
+      - API_SECRET=${QODER_API_SECRET:-qoder_token_secret}
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - ./data/qoder:/app/data
+    networks:
+      - ai-hub-net
+
+  # -------------------------------------------------------------
+  # 5. CLIProxy API Gateway
+  # -------------------------------------------------------------
+  cliproxyapi:
+    image: ${CLIPROXY_IMAGE:-ghcr.io/local-hub/cliproxyapi:latest}
+    container_name: cliproxyapi
+    restart: unless-stopped
+    ports:
+      - "${CLIPROXY_PORT:-8317}:8317"
+    environment:
+      - PORT=8317
+      - SECRET_KEY=${CLIPROXY_SECRET:-cliproxy_secret}
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - ./data/cliproxy:/app/data
+    networks:
+      - ai-hub-net
+
+networks:
+  ai-hub-net:
+    name: ai-hub-net
+    driver: bridge
