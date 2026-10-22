@@ -1,6 +1,8 @@
 services:
   # -------------------------------------------------------------
-  # 1. Unified Gateway: New-API
+  # 1. 统一网关：New-API
+  # 默认外部端口：3000，容器内端口：3000
+  # 功能：负责模型路由、多渠道分发、额度计费与 Token 鉴权
   # -------------------------------------------------------------
   new-api:
     image: calciumion/new-api:latest
@@ -19,7 +21,9 @@ services:
       - ai-hub-net
 
   # -------------------------------------------------------------
-  # 2. Reverse Proxy Hub: WorkBuddy
+  # 2. 反代服务：WorkBuddy Hub
+  # 默认外部端口：8788，容器内端口：8788
+  # 功能：多账号反向代理与号池管理，支持国内/国际双区多账号轮询
   # -------------------------------------------------------------
   workbuddy:
     image: ${WORKBUDDY_IMAGE:-ghcr.io/local-hub/workbuddy2api-hub:latest}
@@ -37,7 +41,9 @@ services:
       - ai-hub-net
 
   # -------------------------------------------------------------
-  # 3. Reverse Proxy Hub: Trae
+  # 3. 反代服务：Trae Hub
+  # 默认外部端口：8791，容器内端口：8791
+  # 功能：Trae 协议反向代理网关服务
   # -------------------------------------------------------------
   trae:
     image: ${TRAE_IMAGE:-ghcr.io/local-hub/trae2api:latest}
@@ -55,7 +61,9 @@ services:
       - ai-hub-net
 
   # -------------------------------------------------------------
-  # 4. Reverse Proxy Hub: Qoder
+  # 4. 反代服务：Qoder Hub
+  # 默认外部端口：8790，容器内端口：8790
+  # 功能：Qoder 协议反向代理网关服务
   # -------------------------------------------------------------
   qoder:
     image: ${QODER_IMAGE:-ghcr.io/local-hub/qoder2api:latest}
@@ -73,7 +81,9 @@ services:
       - ai-hub-net
 
   # -------------------------------------------------------------
-  # 5. CLIProxy API Gateway
+  # 5. CLIProxy 本地代理
+  # 默认外部端口：8317，容器内端口：8317
+  # 功能：本地 CLI 代理服务与转接口
   # -------------------------------------------------------------
   cliproxyapi:
     image: ${CLIPROXY_IMAGE:-ghcr.io/local-hub/cliproxyapi:latest}
@@ -90,6 +100,10 @@ services:
     networks:
       - ai-hub-net
 
+# -------------------------------------------------------------
+# 统一自定义 Docker 桥接网络
+# 供容器间直接使用容器名称互相解析通信
+# -------------------------------------------------------------
 networks:
   ai-hub-net:
     name: ai-hub-net

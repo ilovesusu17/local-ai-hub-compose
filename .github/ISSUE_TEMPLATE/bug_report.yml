@@ -1,0 +1,45 @@
+name: Bug Report / 问题反馈
+description: Report a reproducible bug or issue / 报告发现的 Bug
+title: "[BUG] <Short description>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue! Please do NOT paste sensitive API keys, tokens, or personal passwords in your report.
+        感谢反馈问题！请**切勿**在反馈中附带任何真实的 API Key、密码或私有凭据。
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description / 问题描述
+      description: Clear and concise description of the bug. / 清晰简要地描述问题。
+      placeholder: What happened? / 发生了什么？
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce / 复现步骤
+      description: Steps to reproduce the behavior. / 详细复现步骤。
+      placeholder: |
+        1. Start containers with `docker compose up -d`
+        2. Open New-API console
+        3. Add channel ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / 运行环境
+      description: OS version, Docker engine version, Docker Compose version. / 操作系统、Docker 及 Compose 版本。
+      placeholder: |
+        - OS: Windows 11 / Ubuntu 22.04 / macOS
+        - Docker Version: 24.0.x
+        - Compose Version: 2.20.x
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized Logs / 脱敏日志
+      description: Paste relevant logs here (make sure keys/tokens are removed). / 粘贴相关报错日志（请务必提前脱敏抹去密钥）。

@@ -1,0 +1,22 @@
+name: Feature Request / 功能建议
+description: Suggest an idea or new reverse-proxy service / 提出新功能或建议支持新的反代组件
+title: "[FEAT] <Short description>"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem? / 该建议是否与具体痛点相关？
+      description: A clear and concise description of what the problem is. / 清晰描述痛点或背景。
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the Solution / 建议的解决方案
+      description: What service, tool, or compose configuration would you like to see added? / 你希望增加什么服务、工具或配置？
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered / 考虑过的替代方案
+      description: Any alternative solutions or features you've considered. / 其他备选方案。

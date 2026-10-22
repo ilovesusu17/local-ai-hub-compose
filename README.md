@@ -1,10 +1,49 @@
 # Local AI Hub Compose
 
-A production-ready, self-hosted Docker Compose template for orchestrating **New-API** alongside multiple AI reverse-proxy hubs (WorkBuddy, Trae, Qoder, CLIProxy, etc.) on a single unified Docker bridge network.
+> **v0.1.0** — A self-hosted, all-in-one Docker Compose orchestration template for **New-API** and multiple AI reverse-proxy hubs on a unified Docker bridge network.
 
-Designed for developers, homelabs, and small teams seeking a centralized, cost-effective API gateway for their local AI coding assistants and LLM tools.
+Designed for developers, homelabs, and small engineering teams seeking a centralized, cost-effective API gateway for their local AI coding assistants and LLM tools.
 
-[简体中文 README](./README_zh.md) | [English README](./README.md)
+[简体中文 README](./README_zh.md) | [English README](./README.md) | [Usage Guide](./docs/usage.md) | [Troubleshooting](./docs/troubleshooting.md)
+
+---
+
+## 🏗️ Architecture
+
+```text
+  +-----------------------------------------------------------------------+
+  |                          Local Developer Host                         |
+  |  (VS Code / Cursor / Windsurf / Terminal / Python / Node Clients)     |
+  +-----------------------------------+-----------------------------------+
+                                      |
+                     HTTP Requests    | (Port 3000)
+                                      v
+  +===================================+===================================+
+  |              Unified Docker Bridge Network (ai-hub-net)               |
+  |                                                                       |
+  |   +---------------------------------------------------------------+   |
+  |   |              New-API Gateway Container (new-api)              |   |
+  |   |  - Token Authentication & Quota Management                    |   |
+  |   |  - Model Routing & Load Balancing                             |   |
+  |   +-----------+---------------+---------------+---------------+   |
+  |               |               |               |               |       |
+  |   http://     |   http://     |   http://     |   http://     |       |
+  |   workbuddy   |   trae        |   qoder       |   cliproxyapi |       |
+  |   :8788       |   :8791       |   :8790       |   :8317       |       |
+  |               v               v               v               v       |
+  |        +------------+  +------------+  +------------+  +------------+ |
+  |        | WorkBuddy  |  |    Trae    |  |   Qoder    |  | CLIProxy   | |
+  |        |    Hub     |  |    Hub     |  |    Hub     |  |    API     | |
+  |        +-----+------+  +-----+------+  +-----+------+  +-----+------+ |
+  +==============|===============|===============|===============|========+
+                 |               |               |               |
+                 +---------------+-------+-------+---------------+
+                                         |
+                                         v (Outbound HTTPS)
+                           +----------------------------+
+                           |  Upstream Model Providers  |
+                           +----------------------------+
+```
 
 ---
 
@@ -18,77 +57,70 @@ Designed for developers, homelabs, and small teams seeking a centralized, cost-e
 
 ---
 
+## 🚀 Quick Start (3 Steps)
+
+1. **Clone and copy environment template**:
+   ```bash
+   git clone https://github.com/ilovesusu17-a11y/local-ai-hub-compose.git
+   cd local-ai-hub-compose
+   cp .env.example .env
+   ```
+2. **Start the containers**:
+   ```bash
+   docker compose up -d
+   ```
+3. **Open the web consoles**:
+   - New-API Gateway: `http://localhost:3000` (Default: `root` / `123456`)
+   - WorkBuddy Hub: `http://localhost:8788`
+   - Trae Hub: `http://localhost:8791`
+
+---
+
 ## 📁 Repository Structure
 
 ```text
 local-ai-hub-compose/
-├── docker-compose.yml       # Primary service orchestration
-├── .env.example             # Environment variable template
+├── docker-compose.yml       # Primary service orchestration with comments
+├── .env.example             # Comprehensive environment variable template
 ├── .gitignore               # Strict exclusion of secrets and local mounts
 ├── LICENSE                  # MIT License
+├── CHANGELOG.md             # Semantic release history
+├── CONTRIBUTING.md          # Fork & Pull Request guidelines
 ├── README.md                # English documentation
 ├── README_zh.md             # Chinese documentation
+├── .github/
+│   └── ISSUE_TEMPLATE/      # Standardized bug & feature request templates
 └── docs/
+    ├── usage.md             # Practical guide for New-API channel setup
     └── troubleshooting.md   # Practical guide for DNS, quota, and regional routing
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🤝 Contributing / Welcome to Fork!
 
-### 1. Prerequisites
+Contributions, feature suggestions, and documentation improvements are welcome!
 
-- Docker Engine 24.0+ & Docker Compose v2.20+
-- Host operating system: Linux / macOS / Windows with Docker Desktop or WSL2
+We love community collaboration. If you have a fix or want to add support for another reverse-proxy container:
+1. **[Fork this repository](https://github.com/ilovesusu17-a11y/local-ai-hub-compose/fork)** to your own account.
+2. Create a feature branch (`git checkout -b feature/awesome-hub`).
+3. Commit your sanitized changes and push to your fork.
+4. Submit a **Pull Request**!
 
-### 2. Clone & Configure
-
-```bash
-git clone https://github.com/<your-username>/local-ai-hub-compose.git
-cd local-ai-hub-compose
-
-# Copy configuration template
-cp .env.example .env
-```
-
-Review and adjust ports or credentials inside `.env` to match your local setup.
-
-### 3. Launch Services
-
-```bash
-docker compose up -d
-```
-
-### 4. Initial Access
-
-- **New-API Web Console**: `http://localhost:3000`
-  - Default initial login: `root` / `123456` (**Change immediately upon first login!**)
-- **WorkBuddy Hub Console**: `http://localhost:8788`
-- **Trae Hub Console**: `http://localhost:8791`
-- **Qoder Hub Console**: `http://localhost:8790`
-- **CLIProxy API**: `http://localhost:8317`
+Please check [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
 ## ⚠️ Critical Docker & Gateway Pitfalls
 
-Read the comprehensive [Troubleshooting & Gotchas Guide](./docs/troubleshooting.md) for deeper explanations.
+Read the comprehensive [Troubleshooting Guide](./docs/troubleshooting.md) and [Usage Guide](./docs/usage.md) for full details:
 
 1. **Do NOT use `host.docker.internal` across Custom Docker Networks**:
-   - In user-defined Docker bridge networks, containers resolve peers **by container or service name**, not `host.docker.internal`.
-   - When adding a channel inside the New-API UI, specify:
-     - `http://workbuddy:8788` (Correct)
-     - `http://trae:8791` (Correct)
-     - `http://host.docker.internal:8788` (❌ Will fail with `no such host`)
-
+   - Always route channels using **container names** (e.g. `http://workbuddy:8788`, `http://trae:8791`).
 2. **New-API "Unlimited" Token Balance Trap**:
-   - Marking a New-API user token as "Unlimited" (`无限制`) does **NOT** grant infinite free generations. It directs the token to consume the **owner's account balance**.
-   - If the user account quota runs dry or drops negative, all client requests will immediately return HTTP `403 Insufficient user quota`.
-   - Ensure the user account has adequate balance allocated via `Admin -> Users -> Edit Quota`.
-
+   - Marking a token as "Unlimited" redirects billing directly to the **parent user's quota balance**. Keep user quotas topped up to prevent `403 Insufficient user quota` errors.
 3. **Dual-Region / Multi-Account Session Sticky Pools**:
-   - Reverse-proxy hubs with dual-region support (e.g., Domestic vs. International pools) isolate their keys and upstream endpoints.
-   - Active conversational sessions often latch onto their first selected pool account to maximize KV cache reuse. Switching account weights won't migrate in-flight sessions unless explicitly reset or toggled off.
+   - Maintain separate channels for domestic vs. international account pools, and be aware of KV cache affinity on ongoing sessions.
 
 ---
 
