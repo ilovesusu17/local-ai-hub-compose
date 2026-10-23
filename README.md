@@ -67,7 +67,7 @@ Designed for developers, homelabs, and small engineering teams seeking a central
 
 1. **Clone and copy environment template**:
    ```bash
-   git clone https://github.com/ilovesusu17-a11y/local-ai-hub-compose.git
+   git clone https://github.com/ilovesusu17/local-ai-hub-compose.git
    cd local-ai-hub-compose
    cp .env.example .env
    ```
