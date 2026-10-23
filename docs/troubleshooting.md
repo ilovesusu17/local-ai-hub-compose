@@ -84,3 +84,18 @@ The generic `wget --spider` probe assumes the image ships `wget`. Some minimal i
 
 ### Solution
 Replace that service's `healthcheck.test` with a probe the image really supports (for example a `node`-based check, the vendor's own status endpoint, or a `curl` variant) — or remove the healthcheck for that service. Healthchecks are observational here; nothing in this compose file depends on them.
+
+---
+
+## 6. Upstream Account Concurrency Lockout & Risk Cooldown (e.g. Code 11140 / 403 / 429)
+
+### Symptom
+A hub proxy repeatedly yields HTTP 403 or 429 errors indicating account restrictions, or the gateway logs display `account restricted / anomaly detected` (such as WorkBuddy upstream error code `11140`).
+
+### Cause
+When multiple agents or continuous long-context streams hit the upstream API simultaneously from a single IP or session pool, provider security defenses may temporarily lock the account realm to prevent mass credential suspension.
+
+### Solution
+1. **Enforce Cooldown Periods**: Configure the gateway or reverse proxy to enter a self-protecting cooldown interval (e.g. 15–30 minutes) rather than aggressive immediate retries.
+2. **Account Sharding**: Split domestic and international accounts into distinct upstream pools.
+3. **Dedicated Client Identity**: Ensure upstream tokens and client identifiers match expected API channel signatures to avoid heuristic flag rules.
